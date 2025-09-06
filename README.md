@@ -50,17 +50,18 @@ click here : https://dhiru69-tech.github.io/-page-with-cards-toggle-button-/
 </p>
 
 ---
+## ⚙️ Installation & Setup  
 
-## 🚀 Getting Started  
-
-Clone the repository and run it locally in your browser:  
+Follow these steps to run the project locally 👇  
 
 ```bash
-# Clone this repository
+# 1️⃣ Clone this repository
 https://github.com/dhiru69-tech/-page-with-cards-toggle-button-.git
 
-# Navigate into the project
- cd -page-with-cards-toggle-button-
+# 2️⃣ Navigate into the project folder
+cd -page-with-cards-toggle-button-
 
-# Open in browser
-open index.html   # or just drag & drop into browser
+# 3️⃣ Open the project
+# Option A:  Just Download index.html  Open directly in your browser
+# Option B: Use Live Server (VS Code Extension) for auto reload
+
