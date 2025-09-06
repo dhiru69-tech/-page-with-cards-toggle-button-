@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Cybersecurity Toolkit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;700&display=swap">
+    <style>
+        :root {
+            --primary: #4a6bff;
+            --primary-glow: #4a6bffaa;
+            --secondary: #ff4a6b;
+            --secondary-glow: #ff4a6baa;
+            --accent: #0afb68;
+            --accent-glow: #0afb68aa;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --text-muted: #6c757d;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition: all 0.4s ease;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --card-radius: 16px;
+        }
+
+        .dark-theme {
+            --primary: #6c8bff;
+            --primary-glow: #6c8bffaa;
+            --secondary: #ff6c8b;
+            --secondary-glow: #ff6c8baa;
+            --accent: #0aff78;
+            --accent-glow: #0aff78aa;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+            --text: #f8f9fa;
+            --text-muted: #adb5bd;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding: 20px;
+            min-height: 100vh;
+            transition: background-color 0.5s ease;
+        }
+
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.5;
+        }
+
+        .grid-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to right, var(--shadow) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--shadow) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            margin-bottom: 40px;
+            position: relative;
+            animation: fadeInDown 1s ease;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+            border-radius: 2px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--secondary);
+            text-shadow: 0 0 10px var(--secondary-glow);
+        }
+
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            width: 70px;
+            height: 34px;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--shadow), 0 0 5px var(--primary-glow);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 26px;
+            height: 26px;
+            background: var(--primary);
+            border-radius: 50%;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), background 0.3s ease;
+            z-index: 2;
+        }
+
+        .theme-toggle.active::before {
+            transform: translateX(36px);
+            background: var(--accent);
+        }
+
+        .theme-toggle i {
+            position: absolute;
+            top: 7px;
+            font-size: 18px;
+            z-index: 1;
+            transition: all 0.4s ease;
+        }
+
+        .theme-toggle .fa-sun {
+            color: #ffc107;
+            left: 8px;
+            opacity: 0;
+            transform: rotate(-180deg);
+        }
+
+        .theme-toggle .fa-moon {
+            color: #f8f9fa;
+            right: 8px;
+            opacity: 1;
+            transform: rotate(0);
+        }
+
+        .theme-toggle.active .fa-sun {
+            opacity: 1;
+            transform: rotate(0);
+        }
+
+        .theme-toggle.active .fa-moon {
+            opacity: 0;
+            transform: rotate(180deg);
+        }
+
+        .toggle-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            background: var(--primary-glow);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggle:hover .toggle-glow {
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.8rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Orbitron', sans-serif;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: fadeIn 1s ease, textShine 3s infinite alternate;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 10%;
+            width: 80%;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 4px;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: 0 10px 20px var(--shadow);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+            border: 1px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: var(--gradient);
+            border-radius: var(--card-radius);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 0 15px 30px var(--shadow), 0 0 15px var(--primary-glow);
+        }
+
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .card p {
+            color: var(--text);
+            margin-bottom: 20px;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .card-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            border: none;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .card-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: var(--secondary);
+            transition: width 0.4s ease;
+            z-index: -1;
+        }
+
+        .card-button:hover::before {
+            width: 100%;
+        }
+
+        .card-button:hover {
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .animated-border {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-radius: var(--card-radius);
+            animation: borderAnimation 3s infinite linear;
+            pointer-events: none;
+        }
+
+        .tool-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--accent);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 30px;
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--shadow);
+        }
+
+        @keyframes borderAnimation {
+            0% {
+                border-color: var(--primary);
+                border-width: 2px;
+                opacity: 0.5;
+            }
+            50% {
+                border-color: var(--secondary);
+                border-width: 3px;
+                opacity: 1;
+            }
+            100% {
+                border-color: var(--primary);
+                border-width: 2px;
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes textShine {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .theme-toggle-container {
+                order: -1;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Burp Suite specific styles */
+        .burp-suite {
+            position: relative;
+        }
+
+        .burp-suite::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42, #ff6b35);
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="noise-overlay"></div>
+    <div class="grid-background"></div>
+
+    <header>
+        <div class="theme-toggle-container">
+            <span class="theme-label">DARK</span>
+            <div class="theme-toggle">
+                <div class="toggle-glow"></div>
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
+            </div>
+            <span class="theme-label">LIGHT</span>
+        </div>
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            CyberTools Pro
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Advanced Cybersecurity Toolkit</h1>
+        
+        <div class="cards-grid">
+            <div class="card">
+                <div class="animated-border"></div>
+                <i class="fas fa-dragon tool-icon"></i>
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Kali Linux">
+                </div>
+                <div class="card-content">
+                    <h3>Kali Linux</h3>
+                    <p>Advanced Penetration Testing Linux distribution used for Security Auditing, Vulnerability Assessment, and Digital Forensics.</p>
+                    <a href="#" class="card-button">Explore Tool</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="animated-border"></div>
+                <i class="fas fa-network-wired tool-icon"></i>
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1544890225-2f3faec4cd60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1630&q=80" alt="Networking">
+                </div>
+                <div class="card-content">
+                    <h3>Networking</h3>
+                    <p>Essential knowledge of network protocols, architecture, and security measures to protect data in transit.</p>
+                    <a href="#" class="card-button">Explore Tool</a>
+                </div>
+            </div>
+            
+            <div class="card burp-suite">
+                <div class="animated-border"></div>
+                <i class="fas fa-bug tool-icon"></i>
+                <div class="card-image">
+                    <!-- Burp Suite PNG representation -->
+                    <div style="width:100%;height:100%;background:linear-gradient(135deg, #2c3e50, #4a6bff);display:flex;justify-content:center;align-items:center;">
+                        <div style="text-align:center;color:white;font-family:Orbitron,sans-serif;">
+                            <div style="font-size:2.5rem;font-weight:bold;margin-bottom:10px;">BURP SUITE</div>
+                            <div style="font-size:0.9rem;letter-spacing:2px;">WEB SECURITY TESTING</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Burp Suite</h3>
+                    <p>Leading toolkit for web application security testing with various tools integrated into one platform.</p>
+                    <a href="#" class="card-button">Explore Tool</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="animated-border"></div>
+                <i class="fas fa-user-secret tool-icon"></i>
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Red Teaming">
+                </div>
+                <div class="card-content">
+                    <h3>Red Teaming</h3>
+                    <p>Simulate adversary attacks to test an organization's defense capabilities and improve security posture.</p>
+                    <a href="#" class="card-button">Explore Tool</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        const themeLabels = document.querySelectorAll('.theme-label');
+        
+        // Check for saved theme preference or respect OS preference
+        if (localStorage.getItem('theme') === 'dark' || 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches && !localStorage.getItem('theme'))) {
+            body.classList.add('dark-theme');
+            themeToggle.classList.add('active');
+            updateThemeLabels('dark');
+        } else {
+            updateThemeLabels('light');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            themeToggle.classList.toggle('active');
+            
+            // Save theme preference
+            if (body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+                updateThemeLabels('dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+                updateThemeLabels('light');
+            }
+            
+            // Add animation class for toggle effect
+            themeToggle.classList.add('toggling');
+            setTimeout(() => {
+                themeToggle.classList.remove('toggling');
+            }, 400);
+        });
+        
+        function updateThemeLabels(theme) {
+            if (theme === 'dark') {
+                themeLabels[0].style.color = 'var(--text-muted)';
+                themeLabels[0].style.textShadow = 'none';
+                themeLabels[1].style.color = 'var(--accent)';
+                themeLabels[1].style.textShadow = '0 0 5px var(--accent-glow)';
+            } else {
+                themeLabels[0].style.color = 'var(--accent)';
+                themeLabels[0].style.textShadow = '0 0 5px var(--accent-glow)';
+                themeLabels[1].style.color = 'var(--text-muted)';
+                themeLabels[1].style.textShadow = 'none';
+            }
+        }
+        
+        // Card animation on scroll
+        const cards = document.querySelectorAll('.card');
+        
+        const checkVisibility = () => {
+            cards.forEach((card, index) => {
+                const cardTop = card.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (cardTop < windowHeight * 0.85) {
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, index * 150);
+                }
+            });
+        };
+        
+        // Initial check
+        checkVisibility();
+        
+        // Check on scroll
+        window.addEventListener('scroll', checkVisibility);
+        
+        // Add subtle animation to header on load
+        const header = document.querySelector('header');
+        window.addEventListener('load', () => {
+            header.style.transform = 'translateY(0)';
+            header.style.opacity = '1';
+        });
+    </script>
+</body>
+</html>
