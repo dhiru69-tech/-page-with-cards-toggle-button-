@@ -25,6 +25,7 @@ Welcome to the **Animated Cards Page** ✨ — a project built with **responsive
 ## 🖼️ Live Preview  
 
 click here : https://dhiru69-tech.github.io/-page-with-cards-toggle-button-/
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/6d437f7b-44c4-402d-8f95-7a47ed280804" />
 
 ---
 
