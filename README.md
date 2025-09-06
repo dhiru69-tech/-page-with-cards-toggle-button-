@@ -24,11 +24,7 @@ Welcome to the **Animated Cards Page** ✨ — a project built with **responsive
 
 ## 🖼️ Live Preview  
 
-<p align="center">
-  <img src="screenshot.png" width="600" alt="Project Screenshot"/>
-</p>
-
-> 💡 *Tip: Add your own project screenshot or a short demo GIF here for best effect!*  
+click here : https://dhiru69-tech.github.io/-page-with-cards-toggle-button-/
 
 ---
 
